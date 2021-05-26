@@ -28,6 +28,7 @@ namespace WebApplication1
 		{
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+			services.AddControllersWithViews();
 			services.AddRazorPages().AddRazorRuntimeCompilation();
 		}
 
@@ -43,6 +44,7 @@ namespace WebApplication1
 
 			app.UseEndpoints(endpoints =>
 			{
+				endpoints.MapControllers();
 				endpoints.MapRazorPages();
 			});
 		}
