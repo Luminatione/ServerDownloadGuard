@@ -13,6 +13,6 @@ namespace WebApplication1.Model
 		[Required]
 		public string Command { get; set; }
 		[Required]
-		public string MinimalPermissionLevel { get; set; }
+		public int MinimalPermissionsLevel { get; set; }
 	}
 }
