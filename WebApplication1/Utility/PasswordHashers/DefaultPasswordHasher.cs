@@ -7,9 +7,9 @@ namespace WebApplication1.Utility.PasswordHashers
 {
 	public class DefaultPasswordHasher : IPasswordHasher
 	{
-		private int _defaultSaltSize = 16;
-		private int _defaultIterationCount = 1000;
-		private int _defaultKeySize = 32;
+		private readonly int _defaultSaltSize = 16;
+		private readonly int _defaultIterationCount = 1000;
+		private readonly int _defaultKeySize = 32;
 		public string Hash(string password, string? salt = null, int? iterations = null)
 		{
 			iterations ??= _defaultIterationCount;
