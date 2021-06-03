@@ -30,11 +30,12 @@ namespace WebApplication1.Controllers
 			{
 				return BadRequest();
 			}
-			string state = string.Empty;
+			string state;
 			string? value = null;
 			if (authKey == null || query == null)
 			{
-				state = ErrorResultsDescriptions.InvalidCall;
+				state = ErrorResultsDescriptions.Failure;
+				value = ErrorResultsDescriptions.InvalidCall;
 			}
 			else if (HavePermission(authKey))
 			{
@@ -56,14 +57,15 @@ namespace WebApplication1.Controllers
 				}
 				catch (Exception e)
 				{
-					value = e.Message;
-					state = ErrorResultsDescriptions.ExceptionThrown;
+					state = ErrorResultsDescriptions.Failure;
+					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
 				}
 
 			}
 			else
 			{
-				state = ErrorResultsDescriptions.InsufficientPermissions;
+				state = ErrorResultsDescriptions.Failure;
+				value = ErrorResultsDescriptions.InsufficientPermissions;
 			}
 			return Json(new { state, value });
 		}
