@@ -27,5 +27,16 @@ namespace WebApplication1.Utility.PasswordHashers
 			}
 			return $"{hash}.{salt}.{iterations}";
 		}
+
+		public (string? hash, string? salt, int? iterations) Split(string hashedPassword)
+		{
+			int firstSeparator = hashedPassword.IndexOf('.');
+			int secondSeparator = hashedPassword.IndexOf('.', firstSeparator + 1);
+			string hash = new string(hashedPassword.ToCharArray(), 0, firstSeparator);
+			string salt = new string(hashedPassword.ToCharArray(), firstSeparator + 1, secondSeparator - firstSeparator - 1);
+			int iterations = int.Parse(new string(hashedPassword.ToCharArray(), secondSeparator + 1, hashedPassword.Length - secondSeparator - 1));
+
+			return (hash, salt, iterations);
+		}
 	}
 }
