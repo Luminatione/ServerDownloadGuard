@@ -15,6 +15,6 @@ namespace WebApplication1.Utility
 		public static readonly string InvalidQuery = "Statement is not valid SQL query";
 		public static readonly string InvalidCall = "Invalid API call";
 		public static readonly string ExceptionThrown = "Exception thrown";
-		public static readonly string LoginAlreadyExist = "LoginAlreadyExist";
+		public static readonly string LoginAlreadyExist = "Login already exist";
 	}
 }
