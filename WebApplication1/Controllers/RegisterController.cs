@@ -21,7 +21,6 @@ namespace WebApplication1.Controllers
 	{
 		private readonly IValidator _loginValidator = new LoginValidator();
 		private readonly IValidator _passwordValidator = new PasswordValidator();
-		private readonly IValidator _reCaptchaValidator = new DefaultValidatorDev();
 		private readonly IPasswordHasher _passwordHasher = new DefaultPasswordHasher();
 		private int _defaultRole = 2;
 		public RegisterController(ApplicationDbContext dbContext) : base(dbContext)
@@ -29,7 +28,7 @@ namespace WebApplication1.Controllers
 			commandName = "Register";
 		}
 
-		public IActionResult Index(string? login, string? password, string? recaptcha)
+		public IActionResult Index(string? login, string? password)
 		{
 			
 			if (!ModelState.IsValid)
@@ -38,12 +37,12 @@ namespace WebApplication1.Controllers
 			}
 			string state;
 			string? value = null;
-			if (login == null || password == null || recaptcha == null)
+			if (login == null || password == null)
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
 			}
-			else if (_loginValidator.IsValid(login) && _passwordValidator.IsValid(password) && _reCaptchaValidator.IsValid(recaptcha))
+			else if (_loginValidator.IsValid(login) && _passwordValidator.IsValid(password))
 			{
 				try
 				{
