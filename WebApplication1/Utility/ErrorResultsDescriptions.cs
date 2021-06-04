@@ -16,5 +16,6 @@ namespace WebApplication1.Utility
 		public static readonly string InvalidCall = "Invalid API call";
 		public static readonly string ExceptionThrown = "Exception thrown";
 		public static readonly string LoginAlreadyExist = "Login already exist";
+		public static readonly string ValidationError = "Validation Error";
 	}
 }

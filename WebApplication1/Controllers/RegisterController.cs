@@ -11,6 +11,7 @@ using WebApplication1.Model;
 using WebApplication1.Utility;
 using WebApplication1.Utility.Development;
 using WebApplication1.Utility.PasswordHashers;
+using WebApplication1.Utility.Release;
 
 namespace WebApplication1.Controllers
 {
@@ -18,8 +19,8 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class RegisterController : DefaultController
 	{
-		private readonly IValidator _loginValidator = new DefaultValidatorDev();
-		private readonly IValidator _passwordValidator = new DefaultValidatorDev();
+		private readonly IValidator _loginValidator = new LoginValidator();
+		private readonly IValidator _passwordValidator = new PasswordValidator();
 		private readonly IValidator _reCaptchaValidator = new DefaultValidatorDev();
 		private readonly IPasswordHasher _passwordHasher = new DefaultPasswordHasher();
 		private int _defaultRole = 2;
@@ -68,7 +69,8 @@ namespace WebApplication1.Controllers
 			}
 			else
 			{
-				state = ErrorResultsDescriptions.InvalidCall;
+				state = ErrorResultsDescriptions.Failure;
+				value = ErrorResultsDescriptions.ValidationError;
 			}
 			return Json(new { state, value });
 		}
