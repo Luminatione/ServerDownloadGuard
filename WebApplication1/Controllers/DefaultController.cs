@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 
@@ -14,11 +15,12 @@ namespace WebApplication1.Controllers
 		protected readonly ApplicationDbContext dbContext;
 		protected string commandName;
 		protected readonly IConfiguration configuration;
-
-		public DefaultController(ApplicationDbContext dbContext, IConfiguration configuration = null)
+		protected readonly ILogger<DefaultController> logger;
+		public DefaultController(ApplicationDbContext dbContext, IConfiguration configuration = null, ILogger<DefaultController> logger = null)
 		{
 			this.dbContext = dbContext;
 			this.configuration = configuration;
+			this.logger = logger;
 		}
 		protected int? GetPermissionsLevelOfUser(string authKey)
 		{

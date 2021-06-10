@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 using WebApplication1.Utility.PasswordHashers;
@@ -16,7 +17,7 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class LoginController : DefaultController
 	{
-		public LoginController(ApplicationDbContext dbContext) : base(dbContext)
+		public LoginController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
 		}
 

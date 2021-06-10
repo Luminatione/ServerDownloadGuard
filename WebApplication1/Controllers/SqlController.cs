@@ -11,6 +11,7 @@ using WebApplication1.Utility;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace WebApplication1.Controllers
@@ -19,7 +20,7 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class SqlController : DefaultController
 	{
-		public SqlController(ApplicationDbContext dbContext, IConfiguration configuration) : base(dbContext, configuration)
+		public SqlController(ApplicationDbContext dbContext, IConfiguration configuration, ILogger<DefaultController> logger) : base(dbContext, configuration, logger)
 		{
 			commandName = "Sql";
 		}

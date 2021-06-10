@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 
 namespace WebApplication1
@@ -30,12 +31,14 @@ namespace WebApplication1
 				options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 			services.AddControllersWithViews();
 			services.AddRazorPages().AddRazorRuntimeCompilation();
+			
 
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
+			loggerFactory.AddFile("Logs/log-{Date}.txt");
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();

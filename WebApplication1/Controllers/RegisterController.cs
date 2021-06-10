@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 using WebApplication1.Utility.Development;
@@ -23,7 +24,7 @@ namespace WebApplication1.Controllers
 		private readonly IValidator _passwordValidator = new PasswordValidator();
 		private readonly IPasswordHasher _passwordHasher = new DefaultPasswordHasher();
 		private int _defaultRole = 2;
-		public RegisterController(ApplicationDbContext dbContext) : base(dbContext)
+		public RegisterController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
 			commandName = "Register";
 		}

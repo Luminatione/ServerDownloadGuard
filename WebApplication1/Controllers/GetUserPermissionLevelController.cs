@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 using WebApplication1.Utility.PasswordHashers;
@@ -17,13 +18,14 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class GetUserPermissionLevelController : DefaultController
 	{
-		public GetUserPermissionLevelController(ApplicationDbContext dbContext) : base(dbContext)
+		public GetUserPermissionLevelController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
 			commandName = "GetUserPermissionLevel";
 		}
 
 		public IActionResult Index(string? authKey)
 		{
+			
 			if (!ModelState.IsValid)
 			{
 				return BadRequest();

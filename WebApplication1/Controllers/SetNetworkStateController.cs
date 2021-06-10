@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 
@@ -15,7 +16,7 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class SetNetworkStateController : DefaultController
 	{
-		public SetNetworkStateController(ApplicationDbContext dbContext) : base(dbContext)
+		public SetNetworkStateController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
 			commandName = "GetNetworkState";
 		}

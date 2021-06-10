@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApplication1.Model;
 using WebApplication1.Utility;
 
@@ -17,7 +18,7 @@ namespace WebApplication1.Controllers
 	[ApiController]
 	public class ListCommandsController : DefaultController
 	{
-		public ListCommandsController(ApplicationDbContext dbContext) : base(dbContext)
+		public ListCommandsController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
 			commandName = "ListCommands";
 		}
