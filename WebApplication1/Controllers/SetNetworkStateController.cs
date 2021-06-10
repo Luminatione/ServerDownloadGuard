@@ -32,28 +32,36 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
-			}
-			else if (!HavePermission(authKey))
-			{
-				state = ErrorResultsDescriptions.Failure;
-				value = ErrorResultsDescriptions.InsufficientPermissions;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else
 			{
 				try
 				{
-					NetworkState networkState = dbContext.NetworkState.First();
-					User user = dbContext.Users.First(e => e.AuthKey == authKey);
-					networkState.UserId = user.Id;
-					networkState.Description = description ?? string.Empty;
-					networkState.Type = (NetworkState.NetworkStateType) type;
-					dbContext.SaveChanges();
-					state = ErrorResultsDescriptions.Success;
+					if (!HavePermission(authKey))
+					{
+						state = ErrorResultsDescriptions.Failure;
+						value = ErrorResultsDescriptions.InsufficientPermissions;
+						logger.LogError($"{commandName} - {state}: {value}");
+					}
+					else
+					{
+						NetworkState networkState = dbContext.NetworkState.First();
+						User user = dbContext.Users.First(e => e.AuthKey == authKey);
+						networkState.UserId = user.Id;
+						networkState.Description = description ?? string.Empty;
+						networkState.Type = (NetworkState.NetworkStateType)type;
+						dbContext.SaveChanges();
+						state = ErrorResultsDescriptions.Success;
+						logger.LogInformation($"{commandName} - {state}: User: {user.Id}, Type: {type}, Description: {description}");
+					}
+					
 				}
 				catch (Exception e)
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
 			}
 			return Json(new { state, value });

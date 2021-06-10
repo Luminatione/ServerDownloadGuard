@@ -42,6 +42,7 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else if (_loginValidator.IsValid(login) && _passwordValidator.IsValid(password))
 			{
@@ -51,26 +52,31 @@ namespace WebApplication1.Controllers
 					{
 						string authKey = Guid.NewGuid().ToString();
 						string hashedPassword = _passwordHasher.Hash(password);
-						dbContext.Users.Add(new User { AuthKey = authKey, Role = _defaultRole, Login = login, Password = hashedPassword});
+						User user = new User {AuthKey = authKey, Role = _defaultRole, Login = login, Password = hashedPassword};
+						dbContext.Users.Add(user);
 						dbContext.SaveChanges();
 						state = ErrorResultsDescriptions.Success;
+						logger.LogInformation($"{commandName} - {state}: User: {user.Id}");
 					}
 					else
 					{
 						state = ErrorResultsDescriptions.Failure;
 						value = ErrorResultsDescriptions.LoginAlreadyExist;
+						logger.LogError($"{commandName} - {state}: {value}");
 					}
 				}
 				catch (Exception e)
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
 			}
 			else
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.ValidationError;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			return Json(new { state, value });
 		}

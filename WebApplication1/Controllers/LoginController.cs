@@ -19,6 +19,7 @@ namespace WebApplication1.Controllers
 	{
 		public LoginController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
+			commandName = "Login";
 		}
 
 		private readonly IPasswordComparer _passwordComparer = new DefaultPasswordComparer();
@@ -34,6 +35,7 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else
 			{
@@ -44,11 +46,13 @@ namespace WebApplication1.Controllers
 					{
 						state = ErrorResultsDescriptions.Success;
 						value = user.AuthKey;
+						logger.LogInformation($"{commandName} - {state}: User: {user.Id}");
 					}
 					else
 					{
 						state = ErrorResultsDescriptions.Failure;
 						value = ErrorResultsDescriptions.AuthenticationFailed;
+						logger.LogError($"{commandName} - {state}: {value}");
 					}
 
 				}
@@ -56,6 +60,7 @@ namespace WebApplication1.Controllers
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = ErrorResultsDescriptions.AuthenticationFailed;
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
 			}
 			return Json(new { state, value });

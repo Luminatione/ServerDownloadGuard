@@ -32,6 +32,7 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else
 			{
@@ -41,6 +42,7 @@ namespace WebApplication1.Controllers
 					{
 						state = ErrorResultsDescriptions.Failure;
 						value = ErrorResultsDescriptions.InsufficientPermissions;
+						logger.LogError($"{commandName} - {state}: {value}");
 					}
 					else
 					{
@@ -48,7 +50,8 @@ namespace WebApplication1.Controllers
 						state = ErrorResultsDescriptions.Success;
 						networkState.Id = 0;
 						User user = dbContext.Users.Find(networkState.UserId);
-						return Json(new { state, value = new { networkState.Type, networkState.Description, user?.Login } });
+						logger.LogInformation($"{commandName} - {state}: User: {user.Id}");
+						return Json(new { state, value = new { networkState.Type, networkState.Description, user.Login } });
 					}
 					
 				}
@@ -56,8 +59,10 @@ namespace WebApplication1.Controllers
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
 			}
+			
 			return Json(new { state, value });
 		}
 	}

@@ -24,7 +24,7 @@ namespace WebApplication1.Controllers
 		{
 			commandName = "Sql";
 		}
-		
+
 		public IActionResult Index(string? authKey, string? query)
 		{
 			if (!ModelState.IsValid)
@@ -37,37 +37,42 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
-			else if (HavePermission(authKey))
+			else
 			{
-
 				//we have to connect to db using SqlConnection in order to execute raw sql
-				using NpgsqlConnection dbConnection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-				using NpgsqlCommand command = new NpgsqlCommand(query, dbConnection);
 				try
 				{
-					dbConnection.Open();
-					using NpgsqlDataReader dataReader = command.ExecuteReader();
-					value = string.Empty;
-					while (dataReader.Read())
+					if (HavePermission(authKey))
 					{
-						value += ReadRowAsCSV(dataReader);
+						using NpgsqlConnection dbConnection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
+						using NpgsqlCommand command = new NpgsqlCommand(query, dbConnection);
+						dbConnection.Open();
+						using NpgsqlDataReader dataReader = command.ExecuteReader();
+						value = string.Empty;
+						while (dataReader.Read())
+						{
+							value += ReadRowAsCSV(dataReader);
+						}
+						state = ErrorResultsDescriptions.Success;
+						logger.LogInformation($"{commandName} - {state}: User: {dbContext.Users.First(e => e.AuthKey == authKey).Id}, Query: {query}");
 					}
-					state = ErrorResultsDescriptions.Success;
-
+					else
+					{
+						state = ErrorResultsDescriptions.Failure;
+						value = ErrorResultsDescriptions.InsufficientPermissions;
+						logger.LogError($"{commandName} - {state}: {value}");
+					}
 				}
 				catch (Exception e)
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
+			}
 
-			}
-			else
-			{
-				state = ErrorResultsDescriptions.Failure;
-				value = ErrorResultsDescriptions.InsufficientPermissions;
-			}
 			return Json(new { state, value });
 		}
 

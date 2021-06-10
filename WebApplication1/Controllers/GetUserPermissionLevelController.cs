@@ -36,18 +36,33 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
-			}
-			else if (!HavePermission(authKey))
-			{
-				state = ErrorResultsDescriptions.Failure;
-				value = ErrorResultsDescriptions.InsufficientPermissions;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else
 			{
-				User user = dbContext.Users.First(e => e.AuthKey == authKey);
+				try
+				{
+					if (!HavePermission(authKey))
+					{
+						state = ErrorResultsDescriptions.Failure;
+						value = ErrorResultsDescriptions.InsufficientPermissions;
+						logger.LogError($"{commandName} - {state}: {value}");
+					}
+					else
+					{
+						User user = dbContext.Users.First(e => e.AuthKey == authKey);
+						state = ErrorResultsDescriptions.Success;
+						value = dbContext.Roles.Find(user.Role).PermissionLevel.ToString();
+						logger.LogInformation($"{commandName} - {state}: User: {user.Id}");
 
-				state = ErrorResultsDescriptions.Success;
-				value = dbContext.Roles.Find(user.Role).PermissionLevel.ToString();
+					}
+				}
+				catch (Exception e)
+				{
+					state = ErrorResultsDescriptions.Failure;
+					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
+				}
 			}
 			return Json(new { state, value });
 		}

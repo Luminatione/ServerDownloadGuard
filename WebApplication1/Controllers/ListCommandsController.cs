@@ -34,11 +34,13 @@ namespace WebApplication1.Controllers
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InvalidCall;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else if (!HavePermission(authKey))
 			{
 				state = ErrorResultsDescriptions.Failure;
 				value = ErrorResultsDescriptions.InsufficientPermissions;
+				logger.LogError($"{commandName} - {state}: {value}");
 			}
 			else
 			{
@@ -47,12 +49,14 @@ namespace WebApplication1.Controllers
 
 					var result = dbContext.Permissions.ToList().Select(e => new { e.Command, e.MinimalPermissionsLevel });
 					state = ErrorResultsDescriptions.Success;
+					logger.LogInformation($"{commandName} - {state}: User: {dbContext.Users.First(e=>e.AuthKey==authKey).Id}");
 					return Json(new { state, result });
 				}
 				catch (Exception e)
 				{
 					state = ErrorResultsDescriptions.Failure;
 					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
+					logger.LogError($"{commandName} - {state}: {value}");
 				}
 			}
 			return Json(new { state, value });
