@@ -18,7 +18,7 @@ namespace WebApplication1.Controllers
 	{
 		public SetNetworkStateController(ApplicationDbContext dbContext, ILogger<DefaultController> logger) : base(dbContext, logger: logger)
 		{
-			commandName = "GetNetworkState";
+			commandName = "SetNetworkState";
 		}
 		public IActionResult Index(string? authKey, int? type, string? description)
 		{
