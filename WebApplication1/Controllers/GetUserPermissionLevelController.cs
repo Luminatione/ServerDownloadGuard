@@ -1,26 +1,27 @@
 ﻿#nullable enable
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using WebApplication1.Model;
 using WebApplication1.Utility;
+using WebApplication1.Utility.PasswordHashers;
 
 namespace WebApplication1.Controllers
 {
-	[Route("/api/[controller]")]
+	[Route("api/[controller]")]
 	[ApiController]
-	public class ListCommandsController : DefaultController
+	public class GetUserPermissionLevelController : DefaultController
 	{
-		public ListCommandsController(ApplicationDbContext dbContext) : base(dbContext)
+		public GetUserPermissionLevelController(ApplicationDbContext dbContext) : base(dbContext)
 		{
-			commandName = "ListCommands";
+			commandName = "GetUserPermissionLevel";
 		}
+
 		public IActionResult Index(string? authKey)
 		{
 			if (!ModelState.IsValid)
@@ -28,7 +29,7 @@ namespace WebApplication1.Controllers
 				return BadRequest();
 			}
 			string state;
-			string value;
+			string? value = null;
 			if (authKey == null)
 			{
 				state = ErrorResultsDescriptions.Failure;
@@ -41,18 +42,10 @@ namespace WebApplication1.Controllers
 			}
 			else
 			{
-				try
-				{
+				User user = dbContext.Users.First(e => e.AuthKey == authKey);
 
-					var result = dbContext.Permissions.ToList().Select(e => new { e.Command, e.MinimalPermissionsLevel });
-					state = ErrorResultsDescriptions.Success;
-					return Json(new { state, result });
-				}
-				catch (Exception e)
-				{
-					state = ErrorResultsDescriptions.Failure;
-					value = $"{ErrorResultsDescriptions.ExceptionThrown}: {e.Message}";
-				}
+				state = ErrorResultsDescriptions.Success;
+				value = dbContext.Roles.Find(user.Role).PermissionLevel.ToString();
 			}
 			return Json(new { state, value });
 		}
